@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+<div class="p-5 bg-secondary fs-6">
+  <div class="row">
+    <div class="col-8">
+      <div class="bg-light">
+        <div class="bg-dark text-light p-3 rounded-top-2 mb-4">WhatsApp Campaign</div>
+        <div class="px-2 ">
+          <form id="campaignForm">
+
+            <!-- Campaign Name -->
+            <fieldset class="border rounded p-3 mb-3">
+              <legend class="text-success fw-bold">
+                Campaign Details
+              </legend>
+              <p>Enter a name to identify this campaign and a short description (optional)</p>
+              <div class="mb-3">
+                <input type="text" class="form-control" id="campaignName" placeholder="Campaign Name" aria-label="Campaign Name">
+              </div>
+
+              <!-- Campaign Description -->
+              <div class="mb-3">
+                <textarea class="form-control" id="campaignDescription" rows="3" aria-label="Description" placeholder="Enter campaign description"></textarea>
+              </div>
+            </fieldset>
+
+            <!-- Template Selection -->
+            <fieldset class="border rounded p-3 mb-3">
+              <legend class="text-success fw-bold mb-3">Pick a Template</legend>
+              <div class="input-group mb-3">
+                <select class="form-select" id="templateSelect" aria-label="Template select with button addon">
+                  <option selected>Choose...</option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+              </div>
+            </fieldset>
+
+            <!-- Header -->
+            <fieldset class="border rounded p-3 mb-3">
+              <legend class="text-success fw-bold mb-3">Header</legend>
+              <div class="input-group mb-3">
+                <label class="input-group-text" for="img-file"><i class="bi bi-paperclip"></i></label>
+                <input type="file" class="form-control" id="img-file" name="img_file" aria-label="Image"
+                       accept="image/*" onchange="updateFileName(this)" style="display: none" />
+                <input type="text" class="form-control" placeholder="Image" value="" readonly />
+              </div>
+            </fieldset>
+
+            <!-- Body -->
+            <fieldset class="border rounded p-3 mb-3">
+              <legend class="text-success fw-bold mb-3">Body</legend>
+              <p>Hey <span id="previewRecipient1">Recipient1</span></p>
+              <p id="previewMessageBody">Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic minus blanditiis assumenda eveniet dolores beatae aspernatur neque, velit quos nulla!</p>
+              <p>Press the info button if you are interested in learning more</p>
+
+              <!-- Recipient Fields -->
+              <div class="input-group mb-3">
+                <input type="text" class="form-control recipient-input" id="recipientInput1" placeholder="Enter content for {{1}}" aria-label="Recipient's username">
+                <button class="btn btn-primary mx-1" type="button">VARIABLES</button>
+              </div>
+              <div class="input-group mb-3">
+                <input type="text" class="form-control recipient-input" id="recipientInput2" placeholder="Enter content for {{2}}" aria-label="Recipient's username">
+                <button class="btn btn-primary mx-1" type="button">VARIABLES</button>
+              </div>
+              <div class="input-group mb-3">
+                <input type="text" class="form-control recipient-input" id="recipientInput3" placeholder="Enter content for {{3}}" aria-label="Recipient's username">
+                <button class="btn btn-primary mx-1" type="button">VARIABLES</button>
+              </div>
+            </fieldset>
+
+            <!-- Footer -->
+            <fieldset class="border rounded p-3 mb-3">
+              <legend class="text-success fw-bold mb-3">Footer</legend>
+              <div class="input-group">
+                <input type="text" class="form-control" id="footerUsername" placeholder="Grow your business!" aria-label="Username">
+              </div>
+            </fieldset>
+
+            <!-- Additional Information Button -->
+            <fieldset class="shadow rounded p-3">
+              <legend class="text-success fw-bold mb-3">Buttons</legend>
+              <ul><li>More info</li></ul>
+            </fieldset>
+
+            <!-- Contacts -->
+            <fieldset class="border rounded p-3 mb-3">
+              <legend class="text-success fw-bold mb-3">Contacts</legend>
+              <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Molestiae, consequatur!</p>
+              <div class="form-check">
+                <input class="form-check-input bg" type="radio" name="contactRadio" id="contactRadio1">
+                <label class="form-check-label" for="contactRadio1">
+                  Default radio
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="contactRadio" id="contactRadio2" checked>
+                <label class="form-check-label" for="contactRadio2">
+                  Default checked radio
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Schedule your message -->
+            <fieldset class="border rounded p-3 mb-3">
+              <legend class="text-success fw-bold mb-3">Schedule your message</legend>
+              <p>When do you want to send this message?</p>
+              <div class="form-check">
+                <input class="form-check-input bg" type="radio" name="scheduleRadio" id="sendImmediately" checked>
+                <label class="form-check-label" for="sendImmediately">
+                  Immediately
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="scheduleRadio" id="sendLater">
+                <label class="form-check-label" for="sendLater">
+                  Send later
+                </label>
+              </div>
+
+              <div id="scheduleDateTime" style="display: none;">
+                <p>Enter the date and time you want to send the message:</p>
+                <input type="date" class="form-control mb-2" id="sendDate">
+                <input type="time" class="form-control" id="sendTime">
+              </div>
+            </fieldset>
+
+            <!-- Submit Button -->
+            <div class="text-center mt-4">
+              <button type="submit" class="btn btn-success">Send Campaign</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="whatsappPreview" class="col-4 mt-4">
+      <div class="fixed-preview p-0 bg-light">
+        <div class="bg-dark text-light p-3 rounded-top-2 mb-4 fw-bold">Preview</div>
+      <h2 class="fs-4 px-4 text-success">Preview Message</h2>
+      <div class="text-center bg-success text-light p-3 mx-2 rounded">
+        SEND CAMPAIGN
+      </div>
+        <div>
+          <form>
+            <div  class="mx-2 p-3 whatsapp-preview">
+              <div class="whatsapp-header d-flex justify-content-center" id="previewHeader">
+                <img id="previewImage" src="" alt="Header Image" style="width: 100%; height: 400px; display: none;">
+              </div>
+              <div class="whatsapp-body">
+                <p>Hey <span id="previewRecipient1">Recipient1</span></p>
+                <p id="previewMessageBody">Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic minus blanditiis assumenda eveniet dolores beatae aspernatur neque, velit quos nulla!</p>
+                <button type="button" class="btn btn-outline-success" onclick="toggleMoreInfo()">More info</button>
+              </div>
+              <div class="whatsapp-footer">
+                <p>@<span id="previewFooterUsername">Username</span></p>
+              </div>
+            </div>
+
+            <button type="button" class="mt-3 btn btn-success p-3 mx-2" style="width: 100%;">
+              SEND CAMPAIGN
+            </button>
+          </form>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<style>
+  .fixed-preview {
+    position: fixed;
+    top: 5rem;
+    right: 3rem;
+    max-width: 27%;
+    height: 80vh;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid #ece5dd;
+    border-radius: 10px;
+    padding: 15px;
+  }
+
+  .whatsapp-preview {
+    background-color: #dcf8c6;
+    border: 1px solid #ece5dd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 10px;
+  }
+
+  .whatsapp-header, .whatsapp-body, .whatsapp-footer {
+    margin-bottom: 10px;
+  }
+
+  .whatsapp-header h3, .whatsapp-footer p {
+    margin: 0;
+    color: #075e54;
+  }
+
+  .whatsapp-body p {
+    margin: 5px 0;
+    color: #4a4a4a;
+  }
+
+  .whatsapp-body button {
+    margin-top: 10px;
+    color: #075e54;
+  }
+
+  .whatsapp-body button:focus {
+    outline: none;
+  }
+
+  .whatsapp-body .more-info {
+    display: none;
+    margin-top: 10px;
+  }
+  
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('sendImmediately').addEventListener('change', function() {
+      document.getElementById('scheduleDateTime').style.display = 'none';
+    });
+
+    document.getElementById('sendLater').addEventListener('change', function() {
+      document.getElementById('scheduleDateTime').style.display = 'block';
+    });
+
+    document.getElementById('campaignForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const campaignName = document.getElementById('campaignName').value;
+      const campaignDescription = document.getElementById('campaignDescription').value;
+      const recipient1 = document.getElementById('recipientInput1').value;
+      const recipient2 = document.getElementById('recipientInput2').value;
+      const recipient3 = document.getElementById('recipientInput3').value;
+      const footerUsername = document.getElementById('footerUsername').value;
+
+      document.getElementById('previewCampaignName').textContent = campaignName;
+      document.getElementById('previewCampaignDescription').textContent = campaignDescription;
+      document.getElementById('previewRecipient1').textContent = recipient1;
+      document.getElementById('previewRecipient2').textContent = recipient2;
+      document.getElementById('previewRecipient3').textContent = recipient3;
+      document.getElementById('previewFooterUsername').textContent = footerUsername;
+
+      const fileInput = document.getElementById('img-file');
+      const [file] = fileInput.files;
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('previewImage').src = e.target.result;
+          document.getElementById('previewImage').style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById('campaignName').addEventListener('input', function() {
+      document.getElementById('previewCampaignName').textContent = this.value;
+    });
+
+    document.getElementById('campaignDescription').addEventListener('input', function() {
+      document.getElementById('previewCampaignDescription').textContent = this.value;
+    });
+
+    document.querySelectorAll('.recipient-input').forEach(function(input, index) {
+      input.addEventListener('input', function() {
+        document.getElementById('previewRecipient' + (index + 1)).textContent = this.value;
+      });
+    });
+
+    document.getElementById('footerUsername').addEventListener('input', function() {
+      document.getElementById('previewFooterUsername').textContent = this.value;
+    });
+
+    document.getElementById('img-file').addEventListener('change', function(event) {
+      const [file] = event.target.files;
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('previewImage').src = e.target.result;
+          document.getElementById('previewImage').style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+  });
+
+
+
+
+
+  function toggleMoreInfo() {
+    const moreInfo = document.querySelector('.more-info');
+    moreInfo.style.display = moreInfo.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+{% endblock %}

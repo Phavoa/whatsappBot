@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSV Data</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css" />
+  <style>
+         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+
+::after,
+::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+li {
+  list-style: none;
+}
+
+h1 {
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+.wrapper {
+  display: flex;
+  margin-top: 70px;
+}
+
+.main {
+  min-height: calc(100% - 70px);
+  width: 100%;
+  margin-left: 70px;
+  overflow: hidden;
+  transition: all 0.35s ease-in-out;
+}
+
+#sidebar {
+  position: fixed;
+  top: 68px;
+  height: calc(100% - 70px);
+  width: 70px;
+  min-width: 70px;
+  z-index: 1000;
+  transition: all 0.25s ease-in-out;
+  background-color: #e9f7f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.main-expand {
+  margin-left: 260px;
+}
+
+#sidebar.expand {
+  width: 200px;
+  min-width: 200px;
+}
+
+.toggle-btn {
+  background-color: transparent;
+  cursor: pointer;
+  border: 0;
+  padding: 1rem 1.5rem;
+}
+
+.toggle-btn i {
+  font-size: 1.5rem;
+  color: #070606;
+}
+
+.sidebar-logo {
+  margin: auto 0;
+}
+
+.sidebar-logo a {
+  color: #070606;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+#sidebar:not(.expand) .sidebar-logo,
+#sidebar:not(.expand) a.sidebar-link span {
+  display: none;
+}
+
+.sidebar-nav {
+  padding: 2rem 0;
+  flex: 1 1 auto;
+}
+#sidebar.expand .sidebar-nav {
+  padding-top: 0;
+}
+
+a.sidebar-link {
+  padding: 0.625rem 1.625rem;
+  color: green;
+  display: block;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  border-left: 3px solid transparent;
+  border-radius: 0 30px 30px 0;
+}
+
+.sidebar-link i {
+  font-size: 1.1rem;
+  margin-right: 0.75rem;
+}
+
+a.sidebar-link:hover {
+  background-color: rgb(208, 233, 208);
+}
+
+.sidebar-item {
+  position: relative;
+}
+
+#sidebar:not(.expand) .sidebar-item .sidebar-dropdown {
+  position: absolute;
+  top: 0;
+  left: 70px;
+  background-color: #0e382a;
+  padding: 0;
+  min-width: 15rem;
+  display: none;
+}
+
+#sidebar:not(.expand)
+  .sidebar-item:hover
+  .has-dropdown
+  + .sidebar-dropdown {
+  display: block;
+  max-height: 15em;
+  width: 100%;
+  opacity: 1;
+}
+
+#sidebar.expand .sidebar-link[data-bs-toggle="collapse"]::after {
+  border: solid;
+  border-width: 0 0.075rem 0.075rem 0;
+  content: "";
+  display: inline-block;
+  padding: 2px;
+  position: absolute;
+  right: 1.5rem;
+  top: 1.4rem;
+  transform: rotate(-135deg);
+  transition: all 0.2s ease-out;
+}
+
+#sidebar.expand
+  .sidebar-link[data-bs-toggle="collapse"].collapsed::after {
+  transform: rotate(45deg);
+  transition: all 0.2s ease-out;
+}
+
+#sidebar:not(.expand) .profile {
+  display: none;
+}
+
+#sidebar.expand .profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  margin-top: 10px;
+}
+
+#sidebar.expand .profile > .bi-person-fill {
+  height: 100px;
+  width: 100px;
+  background-color: #e8e8ec;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0;
+}
+
+.fixed-top {
+  z-index: 1001;
+}
+
+.input-group-text {
+  cursor: pointer;
+}
+
+
+    .table-container {
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      background-color: #f8f9fa;
+    }
+
+    th,
+    td {
+      height: 5px;
+      vertical-align: middle;
+      text-align: center;
+      border-bottom: 1px solid #dee2e6;
+      font-size: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+    }
+
+    thead th {
+      border: none;
+    }
+
+    #toggleSidebar {
+      margin: 0;
+      padding: 0;
+    }
+
+    .menu-logo {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .line {
+      width: 15px;
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="fixed-top col-12 bg-success">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex">
+        <button class="toggle-btn" type="button">
+          <i class="bi bi-grid text-white"></i>
+        </button>
+        <div class="sidebar-logo">
+          <a class="text-white" href="#">EBIS</a>
+        </div>
+      </div>
+
+      <div class="px-3">
+        <button type="button" class="btn btn-danger">Report Error</button>
+        <button type="button" class="btn btn-warning">Contact Us</button>
+      </div>
+      
+    </div>
+  </div>
+  <div class="wrapper">
+
+    
+    <aside id="sidebar">
+      <div class="profile">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-person-fill"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"
+          />
+        </svg>
+      </div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">
+            <i class="bi bi-grid-1x2-fill"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">
+            <i class="bi bi-question-circle-fill"></i>
+            <span>Documentation</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a
+            href="#"
+            class="sidebar-link collapsed has-dropdown"
+            data-bs-toggle="collapse"
+            data-bs-target="#auth"
+            aria-expanded="false"
+            aria-controls="auth"
+          >
+            <i class="bi bi-people-fill"></i>
+            <span>Contacts</span>
+          </a>
+          <ul
+            id="auth"
+            class="sidebar-dropdown list-unstyled collapse"
+            data-bs-parent="#sidebar"
+          >
+            <li class="sidebar-item">
+              <a href="#" class="sidebar-link">Manage contacts</a>
+            </li>
+            <li class="sidebar-item">
+              <a href="#" class="sidebar-link">Labels</a>
+            </li>
+          </ul>
+        </li>
+        <li class="sidebar-item">
+          <a
+            href="#"
+            class="sidebar-link collapsed has-dropdown"
+            data-bs-toggle="collapse"
+            data-bs-target="#multi"
+            aria-expanded="false"
+            aria-controls="multi"
+          >
+            <i class="bi bi-whatsapp"></i>
+            <span>WhatsApp</span>
+          </a>
+          <ul
+            id="multi"
+            class="sidebar-dropdown list-unstyled collapse"
+            data-bs-parent="#sidebar"
+          >
+            <li class="sidebar-item">
+              <a
+                href="#"
+                class="sidebar-link collapsed"
+                data-bs-toggle="collapse"
+                data-bs-target="#multi-two"
+                aria-expanded="false"
+                aria-controls="multi-two"
+              >
+                Two Links
+              </a>
+              <ul
+                id="multi-two"
+                class="sidebar-dropdown list-unstyled collapse"
+              >
+                <li class="sidebar-item">
+                  <a href="#" class="sidebar-link">Link 1</a>
+                </li>
+                <li class="sidebar-item">
+                  <a href="#" class="sidebar-link">Link 2</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">
+            <i class="bi bi-chat-fill"></i>
+            <span>Chat</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">
+            <i class="bi bi-bell-fill"></i>
+            <span>Notification</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">
+            <i class="bi bi-gear-fill"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <a href="#" class="sidebar-link">
+          <i class="bi bi-box-arrow-left"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+   
+    <div class="main mt-2">
+      <div class="border border-2 mx-3 rounded-top">
+        <div class=" bg-dark text-light d-flex justify-content-between align-items-center p-2 rounded-top">
+          <div>Contacts</div>
+          <div class="d-flex justify-content-between">
+           <a href="" class="btn btn-sm btn-success">ADD CONTACT</a>
+           <a href="" class="btn btn-sm btn-primary mx-2">IMPORT CONTACTS</a>
+           <a href="" class="btn btn-sm btn-success">CONTACT FILTER</a>
+          </div>
+        </div>
+
+        <div class="container mt-3">
+          <input class="form-control" type="text" placeholder="Search" aria-label="default input example">
+        </div>
+  
+        <div class="container mt-3">
+          <div class="input-group">
+            <input
+              class="form-control"
+              id="filterInput"
+              placeholder="Filter"
+              autocomplete="off"
+            />
+            <button
+              class="btn btn-outline-secondary dropdown-toggle"
+              type="button"
+              id="filterDropdownButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            ></button>
+            <ul class="dropdown-menu" aria-labelledby="filterDropdownButton">
+              <li><a class="dropdown-item" href="#" data-filter="action">Action</a></li>
+              <li><a class="dropdown-item" href="#" data-filter="another action">Another action</a></li>
+              <li><a class="dropdown-item" href="#" data-filter="something else here">Something else here</a></li>
+            </ul>
+          </div>
+          <div id="results" class="mt-4"></div>
+        </div>
+      
+      
+
+        <div class="container mt-5 d-flex column justify-content-center">
+          <div class="table-container col-12">
+            <h1 class="mb-4">CSV Data</h1>
+            <div class="table-responsive">
+              <table id="csvTable" class="table table-striped table-bordered">
+                <thead class="table-dark">
+                  <tr>
+                    {% for heading in csv_data.0 %}
+                    <th>{{ heading }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in csv_data %}
+                  {% if not forloop.first %}
+                  <tr>
+                    {% for item in row %}
+                    <td>{{ item }}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+     
+    </div>
+  </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#csvTable").DataTable({
+        paging: true,
+        pageLength: 20,
+        lengthChange: false,
+        searching: false,
+        ordering: true,
+        info: true,
+        autoWidth: false,
+      });
+
+      });
+  </script>
+  <script>
+      const hamBurger = document.querySelector(".toggle-btn");
+
+      hamBurger.addEventListener("click", function () {
+        document.querySelector("#sidebar").classList.toggle("expand");
+        document.querySelector(".main").classList.toggle("main-expand");
+      });
+    </script>
+    
+</body>
+</html>
